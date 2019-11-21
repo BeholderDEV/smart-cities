@@ -24,6 +24,7 @@ import Maps from "views/Maps.jsx";
 import Notifications from "views/Notifications.jsx";
 import Relatorios from "views/Relatorios.jsx";
 import Frota from "views/Frota.jsx";
+import Users from "views/Users.jsx"
 import Upgrade from "views/Upgrade.jsx";
 
 const dashboardRoutes = [
@@ -53,6 +54,13 @@ const dashboardRoutes = [
     name: "Frota",
     icon: "pe-7s-car",
     component: Frota,
+    layout: "/admin"
+  },
+  {
+    path: "/users",
+    name: "Usuários",
+    icon: "pe-7s-user",
+    component: Users,
     layout: "/admin"
   },
   {
