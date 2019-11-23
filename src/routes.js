@@ -26,6 +26,7 @@ import Relatorios from "views/Relatorios.jsx";
 import Frota from "views/Frota.jsx";
 import Users from "views/Users.jsx"
 import Upgrade from "views/Upgrade.jsx";
+import Tracks from "views/Tracks";
 
 const dashboardRoutes = [
   {
@@ -61,6 +62,13 @@ const dashboardRoutes = [
     name: "Usuários",
     icon: "pe-7s-user",
     component: Users,
+    layout: "/admin"
+  },
+  {
+    path: "/tracks",
+    name: "Rotas",
+    icon: "pe-7s-graph1",
+    component: Tracks,
     layout: "/admin"
   },
   {

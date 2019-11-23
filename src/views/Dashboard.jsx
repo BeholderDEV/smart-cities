@@ -34,6 +34,7 @@ import {
   responsiveBar,
   legendBar
 } from "variables/Variables.jsx";
+import Skeleton from 'react-loading-skeleton';
 
 class Dashboard extends Component {
   createLegend(json) {
@@ -46,37 +47,100 @@ class Dashboard extends Component {
     }
     return legend;
   }
+  state = {
+    isLoadingBuses: true,
+    isLoadingUsers: true,
+    isLoadingTracks: true,
+    buses: [],
+    users: [],
+    tracks: [],
+    error: null
+  }
+  fetchBuses() {
+    fetch(`https://cors-anywhere.herokuapp.com/https://opksmartbusao.herokuapp.com/api/buses/count`)
+      .then(response => response.json())
+      .then(data =>
+        this.setState({
+          buses: data,
+          isLoadingBuses: false,
+        })
+      )
+      .catch(error => this.setState({ error, isLoadingBuses: false }));
+  }
+  fetchUsers() {
+    fetch(`https://cors-anywhere.herokuapp.com/https://opksmartbusao.herokuapp.com/api/users/count`)
+      .then(response => response.json())
+      .then(data =>
+        this.setState({
+          users: data,
+          isLoadingUsers: false,
+        })
+      )
+      .catch(error => this.setState({ error, isLoadingUsers: false }));
+  }
+  fetchTracks() {
+    fetch(`https://cors-anywhere.herokuapp.com/https://opksmartbusao.herokuapp.com/api/tracks/count`)
+      .then(response => response.json())
+      .then(data =>
+        this.setState({
+          tracks: data,
+          isLoadingTracks: false,
+        })
+      )
+      .catch(error => this.setState({ error, isLoadingTracks: false }));
+  }
+  componentDidMount() {
+    this.fetchBuses();
+    this.fetchUsers();
+    this.fetchTracks();
+  }
   render() {
+    const { isLoadingBuses,isLoadingUsers,isLoadingTracks, buses, users, tracks, error } = this.state;
     return (
       <div className="content">
         <Grid fluid>
           <Row>
             <Col lg={3} sm={6}>
-              <StatsCard
-                bigIcon={<i className="pe-7s-server text-warning" />}
-                statsText="Capacity"
-                statsValue="105GB"
-                statsIcon={<i className="fa fa-refresh" />}
-                statsIconText="Updated now"
-              />
+              {!isLoadingBuses ? (
+                <StatsCard
+                  bigIcon={<i className="pe-7s-car text-info" />}
+                  statsText="Frota"
+                  statsValue= {buses.count}
+                  statsIcon={<i className="fa fa-refresh" />}
+                  statsIconText="Updated now"
+                />
+              // If there is a delay in data, let's let the user know it's loading
+              ) : (
+                <Skeleton height={130}/>
+              )}
             </Col>
             <Col lg={3} sm={6}>
-              <StatsCard
-                bigIcon={<i className="pe-7s-wallet text-success" />}
-                statsText="Revenue"
-                statsValue="$1,345"
-                statsIcon={<i className="fa fa-calendar-o" />}
-                statsIconText="Last day"
-              />
+              {!isLoadingUsers ? (
+                <StatsCard
+                  bigIcon={<i className="pe-7s-user text-warning" />}
+                  statsText="Usuários"
+                  statsValue= {users.count}
+                  statsIcon={<i className="fa fa-refresh" />}
+                  statsIconText="Updated now"
+                />
+              // If there is a delay in data, let's let the user know it's loading
+              ) : (
+                <Skeleton height={130}/>
+              )}
             </Col>
             <Col lg={3} sm={6}>
-              <StatsCard
-                bigIcon={<i className="pe-7s-graph1 text-danger" />}
-                statsText="Errors"
-                statsValue="23"
-                statsIcon={<i className="fa fa-clock-o" />}
-                statsIconText="In the last hour"
-              />
+            {!isLoadingTracks ? (
+                <StatsCard
+                  bigIcon={<i className="pe-7s-graph1 text-danger" />}
+                  statsText="Rotas"
+                  statsValue= {tracks.count}
+                  statsIcon={<i className="fa fa-refresh" />}
+                  statsIconText="Updated now"
+                />
+              // If there is a delay in data, let's let the user know it's loading
+              ) : (
+                <Skeleton height={130}/>
+              )}
             </Col>
             <Col lg={3} sm={6}>
               <StatsCard
