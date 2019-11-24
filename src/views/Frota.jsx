@@ -1,46 +1,110 @@
 import React, { Component } from "react";
-import { Grid, Row, Col, Table } from "react-bootstrap";
+import { Grid, Row, Col, Table, Modal, FormGroup, FormControl, ControlLabel, Button } from "react-bootstrap";
+import { FormInputs } from "components/FormInputs/FormInputs.jsx";
 
 import Card from "components/Card/Card.jsx";
 import { thArray, tdArray } from "variables/Variables.jsx";
 import Skeleton from 'react-loading-skeleton';
+import { ENGINE_METHOD_NONE } from "constants";
+
 
 class Frota extends Component {
   state = {
     isLoading: true,
     buses: [],
-    error: null
+    error: null,
+    edittingBus: false,
+    addingBus: false,
+    selectedBus: {},
+    selectedBusId: "as",
+    isLoadingEdit: true,
+    newBusNumber: 0,
+    newBusChassi: 0,
+    newBusSeats: 0,
+    newBusCap: 0,
   }
+
   fetchFrota() {
-    // Where we're fetching data from
     fetch(`https://cors-anywhere.herokuapp.com/https://opksmartbusao.herokuapp.com/api/buses`)
-      // We get the API response and receive data in JSON format...
       .then(response => response.json())
-      // ...then we update the users state
       .then(data =>
         this.setState({
           buses: data,
-          isLoading: false,
+          isLoading: false
         })
       )
-      // Catch any errors we hit and update the app
       .catch(error => this.setState({ error, isLoading: false }));
+  }
+  fetchSelectedBus(busId) {
+    let url = `https://cors-anywhere.herokuapp.com/https://opksmartbusao.herokuapp.com/api/buses/`+busId
+    console.log(url)
+    fetch(url)
+      .then(response => response.json())
+      .then(data =>
+        this.setState({
+          selectedBus: data[0],
+          isLoadingEdit: false
+        })
+      )
+      .catch(error => this.setState({ error, isLoadingEdit: false }));
+  }
+  deleteBus(id){
+    let url = 'https://cors-anywhere.herokuapp.com/https://opksmartbusao.herokuapp.com/api/buses/'+id
+    {console.log(url)}
+    fetch(url, {
+      method: 'DELETE',
+      headers: {'content-type': 'application/json'},
+    }).then(() => {
+      this.setState({isLoading: true});
+      this.fetchFrota()
+    }).catch(err => {
+      console.error(err)
+    });
+  }
+  handleBus(){
+    // let obj = {
+    //   number: newBusNumber,
+    //   chassi: newBusChassi,
+    //   seats: newBusSeats,
+    //   totalCapacity: newBusCap
+    // }
+    // fetch('https://cors-anywhere.herokuapp.com/https://opksmartbusao.herokuapp.com/api/buses/', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Accept': 'application/json',
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify(obj)
+    // }).then(() => {
+    //   this.setState({isLoading: true});
+    //   this.fetchFrota()
+    // })
+  }
+  handleStartEdit(busId){
+    this.setState({ edittingBus: !this.state.edittingBus, selectedBusId: busId, isLoadingEdit:true })
+    this.fetchSelectedBus(busId);
   }
   componentDidMount() {
     this.fetchFrota();
   }
   render() {
-    const { isLoading, buses, error } = this.state;
+    const { isLoading, buses, error, edittingBus, addingBus, selectedBus, selectedBusId, isLoadingEdit, newBusNumber, newBusChassi, newBusSeats, newBusCap } = this.state;
     return (
       <div className="content">
         <Grid fluid>
           <Row>
+            
             <Col md={12}>
               <Card
                 title="Frota da Empresa"
                 category="Lista com todos os ônibus da empresa"
                 ctTableFullWidth
                 ctTableResponsive
+                headerButtons={
+                  <Button bsStyle="success" bsSize="xsmall" style={{border:"none", fontSize:"3rem"}} onClick={() => this.setState({ addingBus: !this.state.addingBus })}>
+                    <i className="pe-7s-plus" />
+                  </Button>
+                }
                 content={
                   <div>
                     {!isLoading ? (
@@ -58,13 +122,23 @@ class Frota extends Component {
                         <tbody>
                           {buses.map(bus => {
                             return (
-                              <tr key={bus.number}>
+                              <tr key={bus._id}>
                                 <td>{bus.number}</td>
                                 <td>{bus.seats}</td>
                                 <td>{bus.totalCapacity}</td>
                                 <td>{bus.chassi}</td>
                                 <td>{bus.passengersNum}</td>
-                                <td style={{textAlign: "center"}}><a href="#"><i className="pe-7s-map-marker" /></a><a href="#"><i className="pe-7s-pen" /></a></td>
+                                <td style={{textAlign: "left"}}>
+                                  <Button bsStyle="warning" bsSize="xsmall" style={{fontSize:"2rem", marginRight:"1rem"}} onClick={() => this.setState({ addingBus: !this.state.addingBus })}>
+                                    <i className="pe-7s-map-marker" />
+                                  </Button>
+                                  <Button bsStyle="info" bsSize="xsmall" style={{fontSize:"2rem", marginRight:"1rem"}} onClick={() => this.handleStartEdit(bus._id)}>
+                                    <i className="pe-7s-pen" />
+                                  </Button>
+                                  <Button bsStyle="danger" bsSize="xsmall" style={{fontSize:"2rem"}} onClick={() => this.deleteBus(bus._id)}>
+                                    <i className="pe-7s-close" />
+                                  </Button>
+                                </td>
                               </tr>
                             );
                           })}
@@ -81,6 +155,118 @@ class Frota extends Component {
             </Col>
           </Row>
         </Grid>
+        <Modal show={this.state.addingBus} onHide={() => this.setState({addingBus: false})}>
+          <Modal.Header closeButton>
+            <Modal.Title>Adicionar Ônibus</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            
+          <form>
+              <FormInputs
+                ncols={["col-md-3", "col-md-5", "col-md-2","col-md-2"]}
+                properties={[
+                  {
+                    label: "Número",
+                    type: "number",
+                    bsClass: "form-control",
+                    placeholder: "000"
+
+                  },
+                  {
+                    label: "Chassi",
+                    type: "text",
+                    bsClass: "form-control",
+                    placeholder: "XXXXXXXXXX"
+                  },
+                  {
+                    label: "Acentos",
+                    type: "number",
+                    bsClass: "form-control",
+                    placeholder: "42"
+                  },
+                  {
+                    label: "Capacidade",
+                    type: "number",
+                    bsClass: "form-control",
+                    placeholder: "60"
+                  }
+                ]}
+              />
+              
+              <div className="clearfix" />
+            </form>
+            <Button bsStyle="info" onClick={this.handleBus}>
+              Adicionar
+            </Button>
+            
+          </Modal.Body>
+        </Modal>
+
+        <Modal show={this.state.edittingBus} onHide={() => this.setState({edittingBus: false})}>
+          <Modal.Header closeButton>
+            <Modal.Title>Editar Ônibus <small>{selectedBusId}</small></Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+          {isLoadingEdit ? (
+            <Row>
+              <Col md={3}>
+                <Skeleton height={40}></Skeleton>
+              </Col>
+              <Col md={5}>
+                <Skeleton height={40}></Skeleton>
+              </Col>
+              <Col md={2}>
+                <Skeleton height={40}></Skeleton>
+              </Col>
+              <Col md={2}>
+                <Skeleton height={40}></Skeleton>
+              </Col>
+            </Row>
+          )
+              :
+              (<form>
+                {console.log(selectedBus)}
+                <FormInputs
+                  ncols={["col-md-3", "col-md-5", "col-md-2","col-md-2"]}
+                  properties={[
+                    {
+                      label: "Número",
+                      type: "number",
+                      bsClass: "form-control",
+                      placeholder: "000",
+                      defaultValue: selectedBus.number
+                    },
+                    {
+                      label: "Chassi",
+                      type: "text",
+                      bsClass: "form-control",
+                      placeholder: "XXXXXXXXXX",
+                      defaultValue: selectedBus.chassi
+                    },
+                    {
+                      label: "Acentos",
+                      type: "number",
+                      bsClass: "form-control",
+                      placeholder: "42",
+                      defaultValue: selectedBus.seats
+                    },
+                    {
+                      label: "Capacidade",
+                      type: "number",
+                      bsClass: "form-control",
+                      placeholder: "60",
+                      defaultValue: selectedBus.totalCapacity
+                    }
+                  ]}
+                />
+                <Button bsStyle="info" pullRight fill type="submit">
+                  Atualizar
+                </Button>
+                <div className="clearfix" />
+              </form>)
+            }
+          </Modal.Body>
+        </Modal>
       </div>
     );
   }

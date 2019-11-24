@@ -22,8 +22,13 @@ export class Card extends Component {
     return (
       <div className={"card" + (this.props.plain ? " card-plain" : "")}>
         <div className={"header" + (this.props.hCenter ? " text-center" : "")}>
-          <h4 className="title">{this.props.title}</h4>
+          <div style={{width:"100%"}}>
+            <h4 className="title" style={{display:"inline-block",width:"90%"}}>{this.props.title}</h4>
+            <div style={{display:"inline-block",width:"10%", textAlign:"right"}}>{this.props.headerButtons}</div>
+          </div>
+          
           <p className="category">{this.props.category}</p>
+          
         </div>
         <div
           className={
