@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Grid, Row, Col, Table } from "react-bootstrap";
+import { Grid, Row, Col, Table, Button } from "react-bootstrap";
 
 import Card from "components/Card/Card.jsx";
 import { thArray, tdArray } from "variables/Variables.jsx";
@@ -41,6 +41,11 @@ class Tracks extends Component {
                 category="Lista com todos os ônibus da empresa"
                 ctTableFullWidth
                 ctTableResponsive
+                headerButtons={
+                  <Button bsStyle="success" bsSize="xsmall" style={{border:"none", fontSize:"3rem"}} onClick={() => this.setState({ addingBus: !this.state.addingBus })}>
+                    <i className="pe-7s-plus" />
+                  </Button>
+                }
                 content={
                   <div>
                     {!isLoading ? (
@@ -58,7 +63,17 @@ class Tracks extends Component {
                               <tr key={bus.number}>
                                 <td>{bus.number}</td>
                                 <td>{bus.name}</td>
-                                <td style={{textAlign: "center"}}><a href="#"><i className="pe-7s-map-marker" /></a><a href="#"><i className="pe-7s-pen" /></a></td>
+                                <td style={{textAlign: "left"}}>
+                                  <Button bsStyle="warning" bsSize="xsmall" style={{fontSize:"2rem", marginRight:"1rem", borderRadius:"50%"}} onClick={() => this.setState({ addingBus: !this.state.addingBus })}>
+                                    <i className="pe-7s-map-marker" />
+                                  </Button>
+                                  <Button bsStyle="info" bsSize="xsmall" style={{fontSize:"2rem", marginRight:"1rem", borderRadius:"50%"}} onClick={() => this.handleStartEdit(bus._id)}>
+                                    <i className="pe-7s-pen" />
+                                  </Button>
+                                  <Button bsStyle="danger" bsSize="xsmall" style={{fontSize:"2rem", borderRadius:"50%"}} onClick={() => this.deleteBus(bus._id)}>
+                                    <i className="pe-7s-close" />
+                                  </Button>
+                                </td>
                               </tr>
                             );
                           })}
@@ -75,6 +90,7 @@ class Tracks extends Component {
             </Col>
           </Row>
         </Grid>
+        
       </div>
     );
   }

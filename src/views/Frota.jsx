@@ -129,14 +129,14 @@ class Frota extends Component {
                                 <td>{bus.chassi}</td>
                                 <td>{bus.passengersNum}</td>
                                 <td style={{textAlign: "left"}}>
-                                  <Button bsStyle="warning" bsSize="xsmall" style={{fontSize:"2rem", marginRight:"1rem"}} onClick={() => this.setState({ addingBus: !this.state.addingBus })}>
+                                  <Button bsStyle="warning" bsSize="xsmall" style={{fontSize:"2rem", marginRight:"1rem", borderRadius:"50%"}} onClick={() => this.setState({ addingBus: !this.state.addingBus })}>
                                     <i className="pe-7s-map-marker" />
                                   </Button>
-                                  <Button bsStyle="info" bsSize="xsmall" style={{fontSize:"2rem", marginRight:"1rem"}} onClick={() => this.handleStartEdit(bus._id)}>
+                                  <Button bsStyle="info" bsSize="xsmall" style={{fontSize:"2rem", marginRight:"1rem", borderRadius:"50%"}} onClick={() => this.handleStartEdit(bus._id)}>
                                     <i className="pe-7s-pen" />
                                   </Button>
-                                  <Button bsStyle="danger" bsSize="xsmall" style={{fontSize:"2rem"}} onClick={() => this.deleteBus(bus._id)}>
-                                    <i className="pe-7s-close" />
+                                  <Button bsStyle="danger" bsSize="xsmall" style={{fontSize:"2rem",borderRadius:"50%"}} onClick={() => this.deleteBus(bus._id)}>
+                                    <i className="pe-7s-close"/>
                                   </Button>
                                 </td>
                               </tr>
