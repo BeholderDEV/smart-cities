@@ -1,12 +1,13 @@
-# light-bootstrap-dashboard-react
+# smart-cities
 
-## Run
 
-You must set `REACT_APP_MAPS_KEY` key at .env file
+
+
+## Tests
 
 ```sh
 npm install
-npm start
+npm test
 ```
 
 ## Dependencies
@@ -19,6 +20,7 @@ npm start
 - [react-chartist](https://ghub.io/react-chartist): React component for Chartist.js
 - [react-dom](https://ghub.io/react-dom): React package for working with the DOM.
 - [react-google-maps](https://ghub.io/react-google-maps): React.js Google Maps integration component
+- [react-loading-skeleton](https://ghub.io/react-loading-skeleton): Make beautiful, animated loading skeletons that automatically adapt to your app.
 - [react-notification-system](https://ghub.io/react-notification-system): A React Notification System fully customized
 - [react-router](https://ghub.io/react-router): Declarative routing for React
 - [react-router-dom](https://ghub.io/react-router-dom): DOM bindings for React Router
