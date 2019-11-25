@@ -6,6 +6,8 @@ import Card from "components/Card/Card.jsx";
 import { thArray, tdArray } from "variables/Variables.jsx";
 import Skeleton from 'react-loading-skeleton';
 import { ENGINE_METHOD_NONE } from "constants";
+import CustomButton from "components/CustomButton/CustomButton";
+
 
 
 class Frota extends Component {
@@ -18,10 +20,7 @@ class Frota extends Component {
     selectedBus: {},
     selectedBusId: "as",
     isLoadingEdit: true,
-    newBusNumber: 0,
-    newBusChassi: 0,
-    newBusSeats: 0,
-    newBusCap: 0,
+    deletingBus: false
   }
 
   fetchFrota() {
@@ -55,11 +54,15 @@ class Frota extends Component {
       method: 'DELETE',
       headers: {'content-type': 'application/json'},
     }).then(() => {
-      this.setState({isLoading: true});
+      this.setState({isLoading: true, deletingBus: false});
       this.fetchFrota()
     }).catch(err => {
       console.error(err)
     });
+  }
+  handleDeleteBus(id){
+    this.setState({ deletingBus: true, selectedBusId: id, isLoadingEdit:true })
+    this.fetchSelectedBus(id);
   }
   handleBus(){
     // let obj = {
@@ -88,7 +91,7 @@ class Frota extends Component {
     this.fetchFrota();
   }
   render() {
-    const { isLoading, buses, error, edittingBus, addingBus, selectedBus, selectedBusId, isLoadingEdit, newBusNumber, newBusChassi, newBusSeats, newBusCap } = this.state;
+    const { isLoading, buses, error, edittingBus, addingBus, selectedBus, selectedBusId, isLoadingEdit, deletingBus } = this.state;
     return (
       <div className="content">
         <Grid fluid>
@@ -135,7 +138,7 @@ class Frota extends Component {
                                   <Button bsStyle="info" bsSize="xsmall" style={{fontSize:"2rem", marginRight:"1rem", borderRadius:"50%"}} onClick={() => this.handleStartEdit(bus._id)}>
                                     <i className="pe-7s-pen" />
                                   </Button>
-                                  <Button bsStyle="danger" bsSize="xsmall" style={{fontSize:"2rem",borderRadius:"50%"}} onClick={() => this.deleteBus(bus._id)}>
+                                  <Button bsStyle="danger" bsSize="xsmall" style={{fontSize:"2rem",borderRadius:"50%"}} onClick={() => this.handleDeleteBus(bus._id)}>
                                     <i className="pe-7s-close"/>
                                   </Button>
                                 </td>
@@ -195,9 +198,22 @@ class Frota extends Component {
               
               <div className="clearfix" />
             </form>
-            <Button bsStyle="info" onClick={this.handleBus}>
+            <CustomButton bsStyle="info" fill onClick={this.handleBus}>
               Adicionar
-            </Button>
+            </CustomButton>
+            
+          </Modal.Body>
+        </Modal>
+        
+        <Modal show={this.state.deletingBus} onHide={() => this.setState({deletingBus: false})}>
+          <Modal.Header closeButton>
+            <Modal.Title>Remover Ônibus</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <p>Quer mesmo remover o Ônibus {edittingBus?<Skeleton width={100}></Skeleton> : selectedBus.number}?</p>
+            <CustomButton bsStyle="danger" fill onClick={() => this.deleteBus(selectedBusId)}>
+              Remover
+            </CustomButton>
             
           </Modal.Body>
         </Modal>
@@ -259,9 +275,9 @@ class Frota extends Component {
                     }
                   ]}
                 />
-                <Button bsStyle="info" pullRight fill type="submit">
+                <CustomButton bsStyle="info" pullRight fill type="submit">
                   Atualizar
-                </Button>
+                </CustomButton>
                 <div className="clearfix" />
               </form>)
             }
