@@ -27,6 +27,7 @@ import Frota from "views/Frota.jsx";
 import Users from "views/Users.jsx"
 import Upgrade from "views/Upgrade.jsx";
 import Tracks from "views/Tracks";
+import BusMap from "views/BusMap.jsx";
 
 const dashboardRoutes = [
   {
@@ -49,6 +50,12 @@ const dashboardRoutes = [
     icon: "pe-7s-news-paper",
     component: Relatorios,
     layout: "/admin"
+  },
+  {
+    path: "/frota/:chassi/map",
+    component: BusMap,
+    layout: "/admin",
+    hideFromSidebar: true
   },
   {
     path: "/frota",

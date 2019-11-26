@@ -7,8 +7,7 @@ import { thArray, tdArray } from "variables/Variables.jsx";
 import Skeleton from 'react-loading-skeleton';
 import { ENGINE_METHOD_NONE } from "constants";
 import CustomButton from "components/CustomButton/CustomButton";
-
-
+import { Link } from 'react-router-dom'
 
 class Frota extends Component {
   state = {
@@ -132,6 +131,11 @@ class Frota extends Component {
                                 <td>{bus.chassi}</td>
                                 <td>{bus.passengersNum}</td>
                                 <td style={{textAlign: "left"}}>
+                                  <Link to={this.props.location.pathname + '/' + bus.chassi + '/map'}>
+                                    <Button bsStyle="warning" bsSize="xsmall" style={{fontSize:"2rem", marginRight:"1rem", borderRadius:"50%"}}>
+                                      <i className="pe-7s-look" />
+                                    </Button>
+                                  </Link>
                                   <Button bsStyle="warning" bsSize="xsmall" style={{fontSize:"2rem", marginRight:"1rem", borderRadius:"50%"}} onClick={() => this.setState({ addingBus: !this.state.addingBus })}>
                                     <i className="pe-7s-map-marker" />
                                   </Button>
