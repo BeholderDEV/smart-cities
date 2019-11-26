@@ -65,7 +65,7 @@ window.showBusMap = function (bus, container) {
     }
 
     function showStatus(bus) {
-        console.log(bus.schedule)
+
         $('#bus-status').html(''
         
         + '<div style="font-size: 16px; margin-bottom: 10px; margin">'        
