@@ -61,6 +61,7 @@ window.showBusMap = function (bus, container) {
         else {
             scheduleId = ''
             window.clearMap()
+            $('#bus-status').html('&nbsp;')
         }
     }
 
